@@ -130,34 +130,34 @@
 - event.stopPropogation() - stops bubbling/capturing of events on parent element.
 
 16. What is DOM?
-- Document Object model is the representation of webpage in a tree-like structure starting from the html tag to its roots(children).
+- Document Object model is the **representation of webpage in a tree-like structure** starting from the html tag to its roots(children).
 - It connects web pages to script. The elements can be accessed with few methods such as querySelector, getElementById and so on.
 
 17. Difference between null and undefined?
 - Both are primitive data types in javascript.
-- null is a type used when the user declares it to have no value.
-- undefined is the default value when a variable has not been initalized yet.
+- **null** is a type used when the **user declares it to have no value**.
+- **undefined** is the **default value when a variable has not been initalized yet**.
 - null is declared by the developer, undefined is by the system.
 
 18. What is NaN?
-- NaN is a global object refering to Not a Number. 
+- NaN is a **global object refering to Not a Number**. 
 - If you try to convert a alphabet/word to a number/int, NaN is returned.
 
 19. What is spread operator in javascript?
-- spread operator (...) allows an iterable(array/string) to be expanded into separate elements.
-- Spread syntax can also be used to create a shallow copy of an array.
+- spread operator (...) allows an **iterable(array/string) to be expanded into separate elements**.
+- Spread syntax can also be used to create a **shallow copy of an array**.
 
 20. What is rest operator in javascript?
-- rest parameter allows infinite parameters to be passed inside an array with the ... operator.
+- rest parameter **allows infinite parameters to be passed inside an array** with the ... operator.
 - spread expands the given arg into separate elements whereas rest groups any number of parameter with the ... operator.
 
 21. Shallow copy and deep copy in js?
-- Shallow copy refers to copying method where both the objects share the same reference, and changes in one results in change in another. (when copied using spread operator, Object.assign(), Array.from())
-- Deep copy refers to copying method, with different references (source and copy are completely different).
+- **Shallow copy** refers to copying method where **both the objects share the same reference**, and changes in one results in change in another. (when copied using spread operator, Object.assign(), Array.from())
+- **Deep copy** refers to copying method, with **different references** (source and copy are completely different).
 - Json.parse(Json.stringify()), structuredClone() - makes deep copy.
 
 22. What is destructuring?
-- Destructuring allows for unpacking values from arrays or properties from an object.
+- Destructuring allows for **unpacking values** from arrays or properties from an object.
     ```
         [a,b] = [10,20]
         // in this case, a = 10, b = 20
@@ -175,24 +175,24 @@
     ```
 
 23. What are arrays in js?
-- Arrays are ordered collection of elements inside a single variable name. 
-- They can hold values of diff types.
+- Arrays are **ordered collection** of elements inside a single variable name. 
+- They **can hold** values of diff types.
 - Their properties can be accessed with help of [] or . operator.
 
 24. Difference between map, filter and reduce?
-- map() method creates a new array populated with results of calling a provided function on every element of the array. 
+- map() method creates a **new array populated with results of calling a provided function on every element** of the array. 
     ```
         let arr = [1,2,3,4,5]
         let doublearr = arr.map(el => el * 2)
         // doublearr = [2,4,6,8,10]
     ```
-- filter() method creates a copy of portion of array based on the provided condition.
+- filter() method creates a **copy of portion of array** based on the provided condition.
     ```
         let arr = [1,2,3,4,5]
         let filteredarr = arr.filter(el => el > 3)
         filteredarr = [4,5]
     ```
-- reduce() method takes in a reducer callback function as argument, executes it in each element of array in order, passes the return value from calculation on previous arg. The final result is a single value. 
+- reduce() method takes in a **reducer callback function as argument**, executes it in each element of array in order, passes the return value from calculation on previous arg. The **final result is a single value**. 
     ```
         let arr = [1,2,3,4,5]
         let sum = arr.reduce((acc,val) => acc + val, 0)
@@ -200,5 +200,89 @@
     ```
 
 25. What is a prototype?
-- They are mechanisms by which javascript objects inherit features from one another. 
-- When accessing a property in an object, javascript searches for in: the object itself, object's prototype, prototype's prototype and so on. This is called prototype chaining.
+- They are mechanisms by which javascript objects **inherit features from one another**. 
+- When accessing a property in an object, javascript searches for in: the object itself, object's prototype, prototype's prototype and so on. This is called **prototype chaining**.
+
+26. What is a memory leak?
+- Memory leak occurs when the **application unintentionally holds reference to the objects that are no longer needed**. It prevents the garbage collector from cleaning it.
+- Eg: when setInterval() and setTimeout() are not cleared with clearInterval() and clearTimeout(). EventListener() is not removed with removeEventListener().
+
+27. What is setTimeout() and setInterval()?
+- Both of these are web apis used to schedule the execution of the function.
+- setTimeout() executes the function once after the specified delay and setInterval() executes it.
+
+28. What is JSON?
+- JSON is a standard text-based format that is used to represent structured data. It has a similar syntax to javascript objects. Popularly used for sneding data from server to client.
+- It can be nested, it can have arrays. It is independent from javascript.
+
+29. Difference between call, apply, and bind?
+- These are methods in js used for controlling the this context. 
+- call() methods are useful in cases where an obj borrows a method from another method.
+- It calls a function with a given this value and args are provided individually. 
+    ```
+        const obj1 = {
+            firstName: 'Cibi',
+            lastName: 'Sharan',
+            introduce: function() {
+                console.log(`Hi, I'm ${this.firstName}`);
+            }
+        }
+        const obj2 = {
+            firstName: 'Shaa'
+        }
+        obj1.introduce.call(obj2); // output -> Hi, I'm Shaa
+    ```
+- apply() - differs where the args are provided here as an array.
+    ```
+        const person = {
+        firstName: 'John',
+        lastName: 'Doe'
+        };
+
+        function greet(greeting, punctuation) {
+        console.log(`${greeting}, I'm ${this.firstName} ${this.lastName}${punctuation}`);
+        }
+
+        greet.apply(person, ['Hello', '!']);
+        // Output: "Hello, I'm John Doe!"
+    ```
+- Use case - to find max val in an array. 
+    ```
+        const numbers = [5, 6, 2, 3, 7];
+        const max = Math.max.apply(null, numbers);
+        console.log(max);  // 7
+    ```
+- bind() - Creates a new function, result stored in a variable with given this arg as parameter and optional args.
+- Not immediately executed.
+    ```
+        const person = {
+        firstName: 'John',
+        lastName: 'Doe'
+        };
+
+        function greet(greeting, punctuation) {
+        console.log(`${greeting}, I'm ${this.firstName} ${this.lastName}${punctuation}`);
+        }
+
+        const boundGreet = greet.bind(person, 'Hello');
+        boundGreet('!');  // "Hello, I'm John Doe!"
+        boundGreet('?');  // "Hello, I'm John Doe?"
+    ```
+
+30. What is currying in js?
+- It is a programming technique where we transform a function that takes in multiple args into multiple functions with single args.
+    ```
+        function multiply(a,b) {
+            return a * b;
+        }
+        // this is changed to
+        function multiply(a) {
+            return function(b) {
+                return a*b;
+            }
+        }
+        const squares = multiply(2)
+        const cubes = multiply(3)
+        squares(5);
+    ```
+- Here, first multiply is called with 2 as arg, the return val is a function that is stored in squares. (this is the inner function and it knows the a value as 2). Now, when squares is called, it already has 2, now it takes b value (5 here), and returns a * b = 10. So the output here is 10.
