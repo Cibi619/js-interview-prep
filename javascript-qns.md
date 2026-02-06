@@ -114,17 +114,91 @@
 - error handling - then,catch,finally used.
 
 14. What is async/await?
-- The async/await keywords enables asynchronous, promise-based behaviour to be written in a clean way and eliminates the need for explicit promise chaining. 
-- async -> creates binding of a new async function to a given name, ensures a promise is returned.
-- await -> given inside body of function, pauses execution of async function until a promise is resolved/rejected.
+- The async/await keywords **enables asynchronous, promise-based behaviour to be written in a clean way** and eliminates the need for explicit promise chaining. 
+- async -> **creates binding of a new async function** to a given name, ensures a promise is returned.
+- await -> given inside body of function, **pauses execution of async function until a promise is resolved/rejected**.
 
 15. What is event bubbling, capturing, delegation?
-- event bubbling - when an event occurs on an element, it bubbles up from child to the top. This is by default.
+- event bubbling - when an event occurs on an element, it **bubbles up from child to the top**. This is by default.
     ```
         <div id="parent">
             <button id="child">Click me</button>
         </div>
     ```
-- event capturing - same, but the order is reversed (from top to bottom). It is mentioned using useCapture: true as argument. 
-- event delegation - This is th technique that can handle events effectively by just having one event listener instead of multiple ones.
+- event capturing - same, but the **order is reversed (from top to bottom)**. It is mentioned using useCapture: true as argument. 
+- event delegation - This is th technique that can **handle events effectively by just having one event listener instead of multiple ones**.
 - event.stopPropogation() - stops bubbling/capturing of events on parent element.
+
+16. What is DOM?
+- Document Object model is the representation of webpage in a tree-like structure starting from the html tag to its roots(children).
+- It connects web pages to script. The elements can be accessed with few methods such as querySelector, getElementById and so on.
+
+17. Difference between null and undefined?
+- Both are primitive data types in javascript.
+- null is a type used when the user declares it to have no value.
+- undefined is the default value when a variable has not been initalized yet.
+- null is declared by the developer, undefined is by the system.
+
+18. What is NaN?
+- NaN is a global object refering to Not a Number. 
+- If you try to convert a alphabet/word to a number/int, NaN is returned.
+
+19. What is spread operator in javascript?
+- spread operator (...) allows an iterable(array/string) to be expanded into separate elements.
+- Spread syntax can also be used to create a shallow copy of an array.
+
+20. What is rest operator in javascript?
+- rest parameter allows infinite parameters to be passed inside an array with the ... operator.
+- spread expands the given arg into separate elements whereas rest groups any number of parameter with the ... operator.
+
+21. Shallow copy and deep copy in js?
+- Shallow copy refers to copying method where both the objects share the same reference, and changes in one results in change in another. (when copied using spread operator, Object.assign(), Array.from())
+- Deep copy refers to copying method, with different references (source and copy are completely different).
+- Json.parse(Json.stringify()), structuredClone() - makes deep copy.
+
+22. What is destructuring?
+- Destructuring allows for unpacking values from arrays or properties from an object.
+    ```
+        [a,b] = [10,20]
+        // in this case, a = 10, b = 20
+    ```
+- all variables can be declared as an array
+    ```
+    const [a,,c] = [10,20,30]
+    // a = 10, c = 30, b is skipped
+    ```
+- also used for swapping logic
+    ```
+    const a = 10, b = 20
+    [a,b] = [b,a]
+    // a = 20, b = 10
+    ```
+
+23. What are arrays in js?
+- Arrays are ordered collection of elements inside a single variable name. 
+- They can hold values of diff types.
+- Their properties can be accessed with help of [] or . operator.
+
+24. Difference between map, filter and reduce?
+- map() method creates a new array populated with results of calling a provided function on every element of the array. 
+    ```
+        let arr = [1,2,3,4,5]
+        let doublearr = arr.map(el => el * 2)
+        // doublearr = [2,4,6,8,10]
+    ```
+- filter() method creates a copy of portion of array based on the provided condition.
+    ```
+        let arr = [1,2,3,4,5]
+        let filteredarr = arr.filter(el => el > 3)
+        filteredarr = [4,5]
+    ```
+- reduce() method takes in a reducer callback function as argument, executes it in each element of array in order, passes the return value from calculation on previous arg. The final result is a single value. 
+    ```
+        let arr = [1,2,3,4,5]
+        let sum = arr.reduce((acc,val) => acc + val, 0)
+        // sum = 15
+    ```
+
+25. What is a prototype?
+- They are mechanisms by which javascript objects inherit features from one another. 
+- When accessing a property in an object, javascript searches for in: the object itself, object's prototype, prototype's prototype and so on. This is called prototype chaining.
