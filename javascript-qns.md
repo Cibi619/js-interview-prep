@@ -208,17 +208,17 @@
 - Eg: when setInterval() and setTimeout() are not cleared with clearInterval() and clearTimeout(). EventListener() is not removed with removeEventListener().
 
 27. What is setTimeout() and setInterval()?
-- Both of these are web apis used to schedule the execution of the function.
+- Both of these are **web apis used to schedule the execution of the function**.
 - setTimeout() executes the function once after the specified delay and setInterval() executes it.
 
 28. What is JSON?
-- JSON is a standard text-based format that is used to represent structured data. It has a similar syntax to javascript objects. Popularly used for sneding data from server to client.
-- It can be nested, it can have arrays. It is independent from javascript.
+- JSON is a standard text-based format that is used to **represent structured data**. It has a similar syntax to javascript objects. Popularly used for sneding data from server to client.
+- It **can be nested, it can have arrays**. It is independent from javascript.
 
 29. Difference between call, apply, and bind?
-- These are methods in js used for controlling the this context. 
-- call() methods are useful in cases where an obj borrows a method from another method.
-- It calls a function with a given this value and args are provided individually. 
+- These are methods in js used for **controlling the this context**. 
+- **call()** methods are useful in cases where an **obj borrows a method from another method**.
+- It calls a function with a given this value and **args are provided individually**. 
     ```
         const obj1 = {
             firstName: 'Cibi',
@@ -232,7 +232,7 @@
         }
         obj1.introduce.call(obj2); // output -> Hi, I'm Shaa
     ```
-- apply() - differs where the args are provided here as an array.
+- **apply()** - differs where the **args are provided here as an array**.
     ```
         const person = {
         firstName: 'John',
@@ -252,7 +252,7 @@
         const max = Math.max.apply(null, numbers);
         console.log(max);  // 7
     ```
-- bind() - Creates a new function, result stored in a variable with given this arg as parameter and optional args.
+- **bind()** - **Creates a new function, result stored in a variable** with given this arg as parameter and optional args.
 - Not immediately executed.
     ```
         const person = {
@@ -270,7 +270,8 @@
     ```
 
 30. What is currying in js?
-- It is a programming technique where we transform a function that takes in multiple args into multiple functions with single args.
+- It is a programming technique where we **transform a function that takes in multiple args into multiple functions with single args**.
+- It is **useful for having a reusable function**.
     ```
         function multiply(a,b) {
             return a * b;
@@ -285,4 +286,104 @@
         const cubes = multiply(3)
         squares(5);
     ```
-- Here, first multiply is called with 2 as arg, the return val is a function that is stored in squares. (this is the inner function and it knows the a value as 2). Now, when squares is called, it already has 2, now it takes b value (5 here), and returns a * b = 10. So the output here is 10.
+- Here, first multiply is called with 2 as arg, the return val is a function that is stored in squares. (this is the inner function and it knows the a value as 2). Now, when squares is called, it already has 2, now it takes b value (5 here), and returns a * b = 10. So output here is 10.
+
+31. What is debouncing?
+- Debouncing **delays the execution of a function until the user stops performing an action for a specified period of time**. 
+- It is useful in cases when the **search has to be executed after the user finishes typing**, not after each keystroke.
+    ```
+        <input type="text" onkeyup="processChanges()" />
+        // js
+        const processChanges = debounce(() => console.log('changes saved..'));
+        function debounce(timeout = 1000) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => { func.apply(this, args); }, timeout);
+            };
+        }
+    ```
+
+32. What is throttling?
+- It is a **technique to limit function execution to be done at specific intervals, regardless how many times that event has been triggered**.
+- **Useful for performance optimization with high-frequency events** such as scroll, mouse movements.
+    ```
+        function throttle(func, limit = 1000) {
+            let inThrottle;
+            return function(...args) {
+                if (!inThrottle) {
+                    func.apply(this, args);
+                    inThrottle = true;
+                    setTimeout(() => {
+                        inThrottle = false;
+                    }, limit);
+                }
+            };
+        }
+
+        // Usage
+        const logScroll = throttle(() => {
+            console.log('Scrolling...');
+        }, 1000);
+
+        // Scroll continuously
+        logScroll(); // Executes immediately
+        logScroll(); // Ignored (within 1s)
+        logScroll(); // Ignored (within 1s)
+        // After 1 second
+        logScroll(); // Executes again
+        logScroll(); // Ignored (within 1s)
+    ```
+
+33. What is strict mode?
+- It is a way to have **restricted variant of js** to indicate us of potential errors.
+- It makes it easier for debugging as it prevents type unsafe actions.
+- Used normally with `use strict` keyword.
+
+34. What is lexical scope?
+- It is a **scoping mechanism in js** where the access to variables in function is determined by where the function is written, not where it's caled.
+- The **inner functions can access variables from outer scope** but the outer functions cannot do it.
+
+35. What is an object in javascript?
+- An object is a **data type in js which is defined by key value pairs**. The values of object can be accessed with dot operator or square brackets.
+- Used to represent real-world entities.    
+    ```
+        const person = {
+            firstName: "Cibi",
+            lastName: "Shaa",
+            age: 10
+        }
+    ```
+
+36. What is localStorage?
+- Localstorage is a **web storage api that allows users to store data persistently in user's browser as key-value pairs**.
+- They can be retrieved by their properties such as getItem(), setItem() and getValue().
+- The **data is only available on the client side** and does not expire.
+
+37. What is sessionStorage?
+- It is also a web storage api similar to localStorage, but the difference is the **data persists only till the session is there**.
+- When the browser/tab is closed, it expires.
+
+38. What are JavaScript modules?
+- JS modules are a **way to structure and organize code and split larger files into resuable smaller ones**.
+- They **can be exported for use** in other modules as well as **they can import modules** for its use.
+- CommonJS is one of the modules, ES6+ is used modern js module now.
+    ```
+        // math.js
+        export function add(a, b) {
+            return a + b;
+        }
+
+        // app.js
+        import { add } from './math.js';
+        console.log(add(2, 3));  // 5
+    ```
+
+39. What is garbage collection?
+- Javascript automatically allocates memory and frees it up when it's not used anymore. It allocates memory during initializing values.
+- It uses mark and sweep algorithm, from the root, all references are seen, and those without it are Garbage collected(GC).
+- Weakmap and WeakSet is used for allowing GC. They differ from Map and Set as they store only object types.
+
+40. What is optional chaining?
+- Optional chaining is done with (?) symbol which safely allows access to nested objects without explicitly checking if each reference in chain is null or undefined.
+- If not used, the object containing null is accessed, reference error is thrown.
