@@ -387,3 +387,50 @@
 40. What is optional chaining?
 - Optional chaining is done with (?) symbol which safely allows access to nested objects without explicitly checking if each reference in chain is null or undefined.
 - If not used, the object containing null is accessed, reference error is thrown.
+
+41. What is the event loop?
+- The event loop is js mechanism to handle asynchronous operations in js, as the language itself is single threaded.
+- Asynchronous operations are pushed to the task queues and when they are completed, wait for the call stack to be empty.
+- After call stack is empty and everything is performed, the items in priority queue (microtask queue) is executed first, which has promises.
+- After this, other things such as setTimeout, setInterval, I/O are executed.
+
+42. What are higher-order functions?
+- The functions that accept functions as parameters or return functions are known as higher-order functions. 
+- Some of the examples are funcs that accepts callbacks as argument. (map(), reduce(), eventListeners);
+
+43. What is memoization?
+- Memoization is an optimization technique used in js to store heavily computed results in cache and use it again when needed.
+- When stored in cache, it's temporary, but very useful to save time on computations.
+    ```
+    function memoize(fn) {
+        const cache = {};
+        
+        return function(...args) {
+            const key = JSON.stringify(args);
+            
+            if (key in cache) {
+                return cache[key];  // Return cached result
+            }
+            
+            const result = fn(...args);
+            cache[key] = result;    // Store in cache
+            return result;
+        };
+    }
+
+    // Expensive function
+    function fibonacci(n) {
+        if (n <= 1) return n;
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+
+    const memoizedFib = memoize(fibonacci);
+
+    memoizedFib(40);  // Slow first time
+    memoizedFib(40);  // Instant second time (cached)
+    ```
+
+44. What is a JavaScript engine?
+- It is a program that executes javascript code. 
+- It reads the source code, converts it to machine code, and manages memory through garbage collection. 
+- V8 engine - chrome, edge, etc.
