@@ -1,0 +1,371 @@
+# Angular Interview Questions
+1. What is Angular?
+- Angular is a javascript framework for building scalable single-page web applications. It is typescrip based.
+- It includes features such as components, directives, dependency injection, etc. making it easier to build large-scale apps.
+
+2. What is typescript?
+- It is a strongly typed superset of javascript. It compiles to plain js. 
+- It has a lot of helpful warning and errors that it indicates us and enable us to write better code.
+
+3. What are Single Page Applications?
+- It is a web app that loads content dynamically without having to refresh the whole page. 
+- It makes our application faster, more responsive and a good user experience.
+- Some examples are gmail, outlook, instagram, etc. - many modern applications.
+
+4. package.json vs package-lock.json?
+- package.json is the main configuration file with list of dependencies and script.
+- It lists the package and the versions used.
+- package-lock.json provides a snapshot of all dependencies and sub-dependencies.
+- Used for consistent setup across all systems.
+- main.ts -> entry point of every angular application. It bootstraps(starts) the application.
+
+5. What is the app-root selector?
+- It is a placeholder used in Angular to define the root component of the angular app. Angular replaces app-root with the content of AppComponent.
+
+6. What are components in angular?
+- Components are the basic building blocks of our angular application.
+- three main parts - class file, the template, the styles.
+- @component decorator is used to define these.
+
+7. What are modules in angular?
+- It is a container that groups all the related components, directives, pipes into one cohesive block. 
+- Declared using the @NgModule decorator.
+- Now due to standalone apps as default, they are no longer widely used.
+
+8. What are directives in angular?
+- Directives are classes with additional behavior to the elements in the templates.
+- Three main directives - Components, structural directives and attribute directives.
+- Component directive - They are directives with template and view. They encapsulate UI logic. 
+
+9. What is a component? Three main parts?
+- It is a fundamental block of the application. 
+- It is a ts class with @Component decorator. 
+- Three main parts - template(view), styles, class file.
+- ng g c component-name to create it in cli
+
+10. Component vs Directive - what's the difference?
+- Component is a directive with a view. It creates a UI building block along with modifying the behaviors.
+- Directives modify the appearance,behavior of existing elements. 
+- Multiple directives can be applied to a component.
+
+11. Lifecycle hooks - list all and their execution order
+- Lifecycle hooks are set of interfaces that allows us to tap into the execution of component - from initialization to destruction.
+- It is very useful and gives control over the initialization, change detection, memory management.
+- Change detection cycle - Mechanism by which the view is kept in sync with the component class.
+- Angular knows every change as it runs change detection cycle on the DOM looking for changes. Whenever @Input properties changes, whenever DOM events(click) occurs, whenever timer properties (setTimeout, setTimeInverval) occurs, http request is made.
+- Execution order and list of lifecycle hooks:
+  - ngOnChanges: It is a lifecycle hook that is executed at the start whenever a component is initialized and an input bound property changes. 
+  - ngOnInit: It is a commonly used lifecycle hook that is called right after the ngOnChanges is done (after the input properties changes are updated). It is fired only once. By this time, none of the child components projected contents, views will be updated. Perfect place to add initialization logic as it will be called only once.
+  - ngDoCheck: This lifecycle hook runs on every change detection cycle, even if no input properties are changed. It runs after ngOnChanges and ngOnInit. It is a good place to have logic that should be run on every change detection cycle or user interaction as it will always run.
+  - ngAfterContentInit: This lifecycle hook is called only after the projected content is fully initialized and rendered in View. Content projection is where when parent component has the child selector called and specifies additional lines(contents) within it, and the child component has a placeholder to recieve that (<ng-content>). Similar to ngOnInit, this is only called during the first change detection cycle after content is projected.
+  - ngAfterContentChecked: This lifecycle hook is called during every change detection cycle after the projection content has been initialized and checked. This runs multiple times (whenever change detection cycle runs).
+  - ngAfterViewInit: This lifecycle hook is called after all the component's view and all the child's view has been fully initialized. Angular also updates properties with @ViewChild and @ViewChildren decorator before raising this hook. It is only called during the first change detection cycle.
+  - ngAfterViewChecked: This hook is called after angular checks and updates all the components view and child's view. It is called during successive change detection cycles.
+  - ngOnDestroy: Angular fires this lifecycle hook just before the component is destroyed/removed from the DOM. Great place to clean up resources, unsubscribe to observables, detach event handler, etc. 
+
+12. Constructor vs ngOnInit - when to use what?
+- Constructor is not an angular feature, it is a part of js and many prog languages. It is the first thing that runs when the class is instantiated.
+- NgOnInit is a lifecycle hook that runs after the first ngOnChanges. It runs only once, so it is ideal for initialization logic such as fetching api data, setting up initial values, handling complex logic that requires UI elements to be ready.
+
+13. ngOnChanges - when does it fire and what parameter does it receive?
+- ngOnChanges is called when there is a change in the input bound properties. It recieves a SimpleChanges argument, which has the previousValue, currentValue, firstChange boolean value.
+
+14. ngAfterViewInit vs ngAfterContentInit - difference?
+- The ngAfterContentInit fires after external content is projected in the component's view via <ng-content>. It is called once after the first ngDoCheck. It handles content that comes from external component.
+- The ngAfterViewInit is called after ngAfterContentChecked when the template's view and all of its child components are fully initialized. It is called once. It handles the component's own html and it's child components.
+
+15. Can you access @ViewChild in ngOnInit? When can you access it?
+- No, we cannot access the @ViewChild in ngOnInit as the ngOnInit fires when the component's input bound properties are ready but not the template. We can access it in ngAfterViewInit where all the child components are fully initialized.
+
+16. What is ngOnDestroy used for? Give practical examples.
+- It is the last lifecycle hook that is called when the component is to be removed/destroyed from the DOM. 
+- Useful to unsubscribe to observables, remove listening to event listeners, clearing timeouts, timeintervals, etc.
+
+17. What is ngDoCheck? When would you use it?
+- It is a lifecycle hook that is executed after ngOnInit. (3rd lifecycle hook).
+- Useful to write any custom change detection logic as this runs during every change detection cycle whether any input properties have changed or not.
+
+18. What are the content projection lifecycle hooks?
+- There are two main lifecycle hooks - ngAfterContentInit and ngAfterContentChecked.
+- ngAfterContentInit is invoked after ngDoCheck when there is an external content projected in the component. It runs only once.
+- Earliest place to use @ContentChild/@ContentChildren.
+- ngAfterContentChecked is invoked whenever there is changes in projected content. Checked hooks fires very frequently and if not properly used, can cause performance issues.
+
+19. What are the types of data binding in Angular?
+- Angular mainly supports two types of data binding - one-way and two-way data binding.
+- One-way -> from view to component or component to view.
+- View to component -> Event binding.
+- Component to view -> attribute binding, property binding, interpolation
+- Two-way data binding -> Data flows both ways. NgModel directive is used to achieve this.
+
+20. Interpolation vs Property Binding - when to use which?
+- Interpolation is used to render the text or strings in the HTML template. They are given inside curly braces and angular converts these expressions into strings and renders it in view. Best use case is to display dynamic data.
+- Property binding is used to set the property of HTML element or a component's @Input. It directly communicates with the DOM object. Used in href, disabled, src, value. Also commonly used to pass data from parent to child. It is done with property binding.
+
+21. Event Binding - how does it work? Can you pass $event?
+- Event binding is a one-way data binding method that data flows from view to the component. (event)
+- (click), (submit), (keyup), etc are commonly used.
+- The $event argument can be passed. It is a special variable used in angular events that have important values that can be accessed with target.value.
+
+22. Two-way binding - how does [(ngModel)] work internally?
+- So the two-way data binding uses both property binding and event binding syntaxes. So it first uses property binding syntax [] where it flows data from component to view. Next is the () syntax of event binding to make data flow from view to component.
+
+23. What is template reference variable? How to use it?
+- A template ref variable is a handler used in specific DOM element within HTML so that it can be easly referenced elsewhere.
+- <element #variablename> is the syntax used for it.
+- These values can be passed as args inside the click events to get the variable value dynamically.
+
+24. Safe navigation operator (?.) - what problem does it solve?
+- Also known as optional chaining, it is commonly used to solve the problem of runtime errors, where if we access a variable with null or undefined values and try accessing it's properties, the error is thrown. This can be avoided with safe navigation operator.
+
+25. What is the difference between [innerHTML] and interpolation?
+- Interpolation - Most common way to display data as plain text. Useful for displaying simple dynamic values.
+- [innerHTML] - Specific type of property binding that displays text as actual HTML content. Angular also has built-in sanitation to prevent script tags (cross-site scripting). It can be useful to display the dynamic text with formatting.
+
+26. Can you bind to custom events? How?
+- Yes, we can bind to custom events using @Output decorator which is useful for passing data from child back to the parent component.
+    ```
+    // child.component.ts
+    @Output itemClicked = new EventEmitter<string>();
+    onButtonClicked(){
+        this.itemClicked.emit('Clicked the item');
+    }
+    // parent.component.ts
+    <app-child (itemClicked)="handleSelection($event)"/>
+    ```
+
+27. What is @Input() and @Output()? How do they enable component communication?
+- These are decorators commonly used for communication between the parent and child component.
+- @Input is used to pass data from parent to child with the help of property binding and @Output is used to pass data from child to parent with the help of event binding.
+
+28. What is EventEmitter? How does it work?
+- EventEmitter is a class used by the @Output decorator to emit events from the child component to the parent.
+- It is declared by creating: @Output item = new EventEmitter<datatype>();
+- It has the emit method by which it transmits the data to be captured by the parent using the $event variable.
+
+29. Can we use EventEmitter in a Service?
+- While we can, it is generally binded with the @Output decorator. To share data with services, we commonly use RxJs Subjects/BehaviorSubject.
+
+30. What are the three types of directives?
+- Component directive, structural directives and attribute directives are the three types of directives. 
+- Component directive is a directive with view (UI encapsulated). Given with @Component decorator.
+- Structural directives are defined with astericks (*ngIf, *ngFor). They are used to modify the DOM elements.
+- Attribute directives are those used to modify the appearance of the elements (ngClass, ngStyle). They are used with property binding syntax.
+- There are also custom directives that we can use for our specific use as they can be imported in the components that we need them.
+
+31. Structural directives (*ngIf, *ngFor) - how do they work?
+- Used to modify the DOM elements, can have loops or specific conditions to render the UI and make the code cleaner and dynamic.
+- When we use the structual directives with *, angular is performing syntactic sugar, underneath, these are wrapped in <ng-template>. 
+- *ngIf - used for conditional rendering based on truthy/falsy values.
+- *ngFor - used to repeat a code for every item in the array/collection.
+
+32. Attribute directives (ngClass, ngStyle) - explain with examples
+- These are the directives used to modify the appearance of the elements by adding, removing classes, styles based on the requirements.
+- ngClass is used to apply classes based on conditions. If truthy, set this class else this one.
+- ngStyle is used similar to inline styles based on conditions.
+
+33. How to create a custom attribute directive?
+- First, we can create a directive file with ng generate directive directive-name.
+- We can provide the functionality for it. For example, if we want to have highlighting feature, provide the functionality inside the directive.
+- To modify underlying html elements, we must inject ElementRef into the constructor. And with HostListener, we can listen to the events such as mouseleave, mouseenter.
+- Then, we should import the directive and with the attribute binding syntax, [appHighlight], we can use the custom attribute directive we created.
+
+34. ngFor - what is trackBy and why is it important?
+- By default when ngFor is used to render a list, Angular tracks object by their object reference. So even if the data hasn't changed when fetching the list again, it treats it as a new object(list), deletes the existing one in DOM and replaces it. 
+- When trackBy is used, we indicate angular to check not only with obj reference, but with the id of the elements if it has really changed. 
+- This is really helpful in performance optimization.
+
+35. ngIf with else - how to implement?
+- ngIf with else is used for conditional rendering. 
+- The statement with if condition is used with *ngIf, the statement with else is assigned with a template ref variable.
+- This is used in <ng-template #referenceVariable>else logic</ng-template>
+
+36. ngSwitch - when to use it over ngIf?
+- ngSwitch can be used when there are multiple conditions to check and if we want the structure to be optimal. 
+- We use *ngSwitchCase for the series of statements and *ngSwitchDefault at the end.
+
+37. What is HostListener and HostBinding in directives?
+- HostListener and HostBinding are used in creating custom attribute directives. These are particularly helpful in listening to events such as mouseenter, mouseleave and bind the custom directive to the element.
+- HostListener can be used to subscribe to events without having to manually work with DOM.
+- HostBinding can be used to dynamically set properties like css styles or classes on the host element.
+
+38. What are pipes? Built-in pipes examples?
+- Pipes are used to transform/format data before displaying it in the view. It takes data as input and transforms it before displaying it in the template.
+- Some of the common built in pipes are uppercase,lowercase pipes, currency pipes, Json pipes.
+- Syntax: {{value | pipename: parameters}}
+
+39. How to create a custom pipe?
+- A custom pipe can be defined by creating a typescript class with the @Pipe decorator. The class should implement the PipeTransform interface and we can use the transform method to set up the parameters as per our requirements and call it where we require.
+
+40. Why is a pipe better than calling a function in the template like {{ getFormattedDate(date) }}?
+- A function call is triggered during every change detection cycle whereas a pure pipe is only called when the input properties changes. So it is more optimal for performance related purposes to use a pipe when it can be done.
+
+41. Pure vs Impure pipes - what's the difference?
+- These are two types of pipes. Pure pipe is the default pipe which is only called when there is change in input properties. Pure change is the change to primitive values like string, number and also change to the object's reference. These results are cached and reused if there is no change in these values.
+- Impure pipes are called during every change detection cycle and can be heavy on memory. We set pure: false to make a pipe impure.
+
+42. When would you use an impure pipe?
+- When we perform any operations/activity and for example if there is an element pushed to the array, and the array reference does not change, we would need an impure pipe to write any logic based on the change detection cycle. But should be careful about the memory optimization part when using impure pipes.
+
+43. Async pipe - what does it do and why is it useful?
+- The async pipe allows us to handle asychronous data. It allows us to subscribe to observable or promise from the view template and return the value emitted.
+- It is a built-in impure pipe that makes working with asynchronous data very easy and safe.
+- It does three main tasks:
+    - Subscribes to an observable or promise as soon as the component loads.
+    - Returns latest value emitted by the stream.
+    - Unsubscribes automatically when component is destroyed.
+- It prevents memory leak, helps write cleaner code.
+
+44. Can you chain multiple pipes? How?
+- Yes, it is possible to chain multiple pipes by separating them with the pipe | operator. 
+- {{ value | date: mm/yy | uppercase | async}}
+
+45. Parameterized pipes - how to pass parameters?
+- We can pass parameters in pipes with the : operator.
+- {{ value | pipename: parameters}} - {{ dateVal | date: 'longDate'}}
+- It is very useful to create custom pipes.
+
+46. What happens if you don't unsubscribe from an Observable but use async pipe?
+- Async pipe automatically unsubscribes once the component is destroyed. It is one of the key features of async pipe as it is useful in preventing memory leaks.
+
+47. How does pipe performance impact your app?
+- The performance purely depends on whether we are using a pure or impure pipe. When using a pure pipe, it is far better for performance than impure ones as they run change detection only when input property or object references changes.
+
+48. What is NgModule? What are its main properties?
+- NgModule is a class defined by the @NgModule decorator. It bundles all the components, directives, pipes together and tells angular how they interact with other parts of the application.
+- Declarations: This contains all the components, directives, pipes listed here in an array.
+- Standalone: this is a boolean property which indicates whether the app is standalone or not.
+- imports: this array contains all the components on which the component class is dependent on.
+- exports: this contains all the components that can be exported to other components.
+- providers: this array is to register all services that can be injected within that module.
+
+49. bootstrap property - what is it for?
+- The bootstrap property tells angular which component to load first. It is usually AppComponent as it's the first component to be loaded.
+- Bootstrapping process - Browser loads the app, angular looks at bootstrap property and finds AppComponent. It then looks for selector of the component in index.html (<app-root>). Angular inserts the component template into the tag.
+
+50. What is a feature module? When to create one?
+- A feature module can be created in angular to group specific set of related functionalities together (components related are grouped together). 
+- This is preferred when the application size grows and we need to split the NgModule into smaller sub functionalities.
+- It is also used as a lazy loading feature by calling the module only when user clicks the related ones.
+
+51. Shared module vs Core module - best practices?
+- Core Module is for shared, singleton services and components that should only be instantialized once in the application.
+- Shared module is for services, pipes, directives that are to be shared across multiple components. For example, custom button, loader spinners, etc.
+
+52. Lazy loading modules - how does it work?
+- Lazy loading is a design pattern in angular that allws to load modules/components only user navigates to a specific route.
+- Useful for performance optimization.
+
+53. What is forRoot() and forChild() pattern?
+- When there is module with services, we need to ensure that only one instance is registered. We can call the forRoot() to register once in root module.
+- forChild() - Configures module for use in lazy-loaded modules or feature modules. Can be used multiple times. 
+
+54. What is preloading strategy?
+- These are set of strategies to load all the lazy-loading modules behind the application processes after the initial setup is done. For example, the basic starter modules are loaded and the user is in the home component. Now behind scenes, all the lazy loaded features can be loaded to be ready when the user interacts with it. 
+- This is done to give a faster user experience.
+
+55. What is Dependency Injection in Angular?
+- DI is a coding pattern in which a class recieves its dependencies from external sources instead of creating them by their own.
+- Three parts:
+    - The Dependency: The service that needs to be used.
+    - The Provider: It tells angular how to create the dependency.(providedIn: root)
+    - The Injector: It is responsible for maintaining container of service instances and delivering them to components as they request them.
+
+56. What is an injector and injection token?
+- Injector is responsible for maintaining instances and delivering them when needed, injection token is used when the dependency is not a class.
+    ```
+    import { InjectionToken } from '@angular/core';
+
+    export const API_URL = new InjectionToken<string>('API_URL');
+    ```
+
+57. What is providedIn: 'root'?
+- It is the easiest and most efficient way to inject dependencies. It follows singleton pattern, instance is defined in the root and can be accessed throughout the application.
+- When you provide the service at the root level, Angular creates a single, shared instance of service and injects it into any class that asks for it.
+
+58. Difference between providedIn root vs module vs component level?
+- ProvidedIn root - can be used to declare a single instance and can be used throughout the application.
+- module and component level as the name suggests can only be used inside those parts of the application.
+
+59. What is @Injectable decorator?
+- The @Injectable() decorator is a piece of metadata that tells Angular compiler that a class is a service and is intended to be used with DI system.
+- It is useful to provide th scope (root or component or module).
+
+60. What is multi provider?
+- They have multiple instances in the provider and is used as an array instead of a single value.
+    ```
+    providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+    ]
+    ```
+
+61. What is hierarchical dependency injection?
+- When we use a provider array inside the component, and specify the service to be injected, a new instance is created instead of using the same instance for DI.
+- Any changes made here are not reflected in other dependencies.
+- Hierarchical injection - When we provide dependency for a class, that same dependency is injected in component class and all its child and grandchild components too.
+- When we provide a dependency on a component, and we also provide dependency on the child component, the child dependency will override the parent. This is known as dependency override.
+
+62. How does Angular routing work?
+- Angular routing enables navigation by mapping URL paths to components within a Single Page Application. 
+- We define these mappings in the routes array and use the router-outlet as a dynamic placeholder for rendering.
+    ```
+    export const routes: Routes = [
+        { path: 'Home', component: HomeComponent}
+    ]
+    ```
+    ```
+    // configuring routes in standalone apps
+    bootstrapApplication(AppComponent, {
+    providers: [
+        provideRouter(routes) // This replaces RouterModule.forRoot()
+    ]
+    });
+    // configuring them in module-based approach
+    @NgModule({
+    imports: [RouterModule.forRoot(routes)],
+    exports: [RouterModule]
+    })
+    export class AppRoutingModule { }
+    ```
+
+63. What is router-outlet?
+- Router outlet (<router-outlet>) is the placeholder used by angular where it sees the path match to the component and renders it in place of the outlet. It tells Angular exactly where to render the component that matches the current URL path.
+- Without the router-outlet, Angular would know which component to load based on your routes, but it wouldn't know where to put it on the screen.
+
+64. What is routerLink vs router.navigate()?
+- routerLink is used for navigating between different routes from the view, whereas router.navigate() is used inside the component file.
+- routerLink - best used for static links, menus, etc.
+- router.navigate() - best for dynamic navigation based on logic or any parameters from api call to be added.
+
+65. What are route parameters and query parameters?
+- In angular, both route parameters and query parameters allows us to pass data in the url, but route parameter is primarily to identify the route, whereas the query parameters are for filter logics.
+- Route parameters syntax: ``` { path: 'transaction/:id', component: DetailComponent } ```
+- Query parameters syntax: ``` this.router.navigate(['/transactions'], { queryParams: { sort: 'date' } }); // savify.com/transactions?sort=date&filter=food```
+
+66. What is ActivatedRoute?
+- ActivatedRoute is a service in angular that provides us the information on the current route that is hosted.
+- It holds info on the: parameters(:id, :name), query parameters(?sort=date), static data in route config.
+    ``` constructor(private route: ActivatedRoute) ```
+- To access data, there are two ways:
+    - snapshot - synchronous way, can be used if user will not change the url params value or navigate to another page.
+    - observable - async way.
+
+67. What is a child route?
+- A child route in angular is a route that is nested inside another route. It is useful to create hierarchy in the UI where the parent component stays and child routes are swapped in and out. Mainly useful for modular grouping and code reusability.
+- To define child routes, the children property is used:
+    ```
+        const routes: Routes = [
+        {
+            path: 'reports',
+            component: ReportsComponent, // The "Parent"
+            children: [
+            { path: 'monthly', component: MonthlyReportComponent }, // Child 1
+            { path: 'yearly', component: YearlyReportComponent },   // Child 2
+            { path: '', redirectTo: 'monthly', pathMatch: 'full' }  // Default child
+            ]
+        }
+        ];
+    ```
+
+68. What is a named router outlet?
