@@ -369,3 +369,174 @@
     ```
 
 68. What is a named router outlet?
+- There can be more than one router outlets in a program when we want the primary default outlet to render the selected component's view but also have any other components(like sidenav, popups) displayed in the page at the same time.
+- We can mention multiple outlets with the name attribute.
+    ``` <router-outlet name="sidebar"></router-outlet> ```
+- In ts file, we need to mention the outlet there too.
+    ```
+        const routes: Routes = [
+        { path: 'dashboard', component: DashboardComponent }, // Primary
+        { 
+            path: 'summary', 
+            component: MiniSummaryComponent, 
+            outlet: 'sidebar' // Targets the named outlet
+        }
+        ];
+    ```
+
+69. What are route guards? Types?
+- Angular route guards can be used to control whether the user can navigate to or away from the route based on a given condition.
+- Some of the use cases of route guards:
+    - To restrict a user from accessing a protected route.
+    - To save changes before moving away from view.
+    - Validate route parameters before navigating to the route.
+- CanActivate/CanActivateChild - Decides if a route can be accessed or not. Can set only the users with access (like logged in users) to access the routes.
+- CanDeactivate - we can base this on certain conditions, like whether the user wants to save changes or not and based on that we can deactivate the routes too.
+- Resolve - This guard delays the navigation of the route until some tasks are complete. It pre-fetches the data from backend api, before activating the route.
+- CanLoad - This route guard prevents the lazy loaded modules from loading.
+
+70. What is CanActivate?
+- CanActivate route guard can be used in routes to protect o restrict it from users with unauthorized access.
+     ``` { path: 'Courses', Component: CoursesComponent, canActivate: [AuthGuardService]} ```
+
+71. What is CanDeactivate?
+- CanDeactivate is the route guard that can be used to allow users to leave a route with any specified conditions.
+
+72. What is lazy loading in routing?
+- Lazy loading is an optimization technique that splits the application into smaller bundles. Instead of loading the entire application/modules/components at the initial setup, it loads oly the required portions.
+
+73. What is a wildcard route?
+- A wildcard route is the catch-all route that is set to catch any routes that doesn't match the list. It is defined by two **.
+
+74. What is route redirects?
+- It tells the user to redirect from one path to another. Usually used as the first route in the list. 
+- Defined with the redirectTo property.
+
+75. What is RouterLinkActive?
+- It is a built-in angular directive that helps user providing visual feedbacks on the route they're currently in.
+    ``` <a routerLink="/dashboard" routerLinkActive="active-link">Dashboard</a> ```
+
+76. How do you pass data to the routes?
+- So the common ways to pass data to routes are route parameters, query parameters, state (to pass complex objects to not be shown in url).
+
+77. What is an Observable?
+- Observable is a wrapper around asynchronous data. We use it primarily in angular to handle async code.
+- It returns a promise after some time, which we can subscribe and make us of the data in it.
+- It is a stream of data that can observed over time. It can handle asynchronous data sources like user inputs, network request, timers, etc.
+- Creation of observables: Different methods, can be created like a class contructor with the new keyword, with rxjs operators with of keyword.
+    ```
+    // with new keyword
+    const myObservable = new Observable(observer => {
+    observer.next(1);
+    observer.next(2);
+    observer.next(3);
+    });
+    // with of operator
+    const myObservable = of(1,2,3)
+    ```
+
+78. Difference between Observable and Promise?
+- A promise cannot handle stream of asynchronous data. It always returns a single value. 
+- Observables can be used to handle stream of data. It can return multiple values.
+- In promise,we would get the data returned even if no one uses that data. In observables, only when a user requests it(subscribes to it), we get the data returned for us to use.
+- Observable (Event Emitter) -> Observer(Event Listener/Subscriber) -> Event Handler
+
+79. What is of() and from()?
+- The of() operator creates an observable from the arguments we pass onto it. Any number of parameters can be passed.
+- It is a RxJS operator. Each argument is sent separately from one another.
+- from() operator takes in a single value as parameter (which is an iterable) and that is iterated and their values are streamed one after the other.
+- They both return an Observable, but the way they handle data is different.
+
+80. what are map() and tap() operators in RxJS?
+- Both are pipeable operators that are used to handle data that flows through an observable stream.
+- map() changes/transforms the data, tap() looks into it.
+- Use case: map() -> to extract just the username from the api data.
+            tap() -> logging, debugging data (console logs)
+
+81. What are operators in RxJS?
+- Operators are simply functions that allows us to manipulate, filter, transform data as they are flowing through the stream.
+- map(), filter(), of(), from(), tap() are some examples of operators.
+
+82. What is a Subject?
+- Subject is a special type of Observable allowing multiple users to use the data. It is similar to EventEmitters where the emitted event can be seen by all the subscribers.
+- It is a part of reactive programming where a new value when emitted (with next()) will immediately be updated to the subscribers.
+
+83. Difference between Subject, BehaviorSubject, ReplaySubject, AsyncSubject?
+- These are the variants of subject used to control how data is shared and remembered.
+- Subject - does not remember previously emitted values. Only the latest value can be read.
+- BehaviorSubject - it always requires an initial value. when a value is emitted(latest value), all the subscribers get noticed of that value.
+- ReplaySubject - Has more history. Can store some previous values that can be seen.
+- AsyncSubject - Only emits the last value it has recieved after the complete() method.
+
+84. What is mergeMap vs switchMap vs concatMap vs exhaustMap?
+- These are flattening operators. They are primarily used when an outer observable we have triggers an inner observable and how these are handled.
+- mergeMap - allows multiple inner observables to run simultaneously. Can be used to delete multiple items back to back.
+- switchMap - when the inner observable changes, it allows for switching to the new one and forgetting the current one.
+- concatMap - it queues the new one and waits for current one to complete.
+- exhaustMap - when a current observable is there, it ignores new ones.
+
+85. What are forkJoin and combineLatest?
+- These are combination Operators. These are used when we have multiple observables and we want to join them into a single stream.
+- forkJoin - (Similar to Promise.all()). Waits for all observables to complete and emits their final values as an array.
+- If any one fails, whole thing fails.
+    ```
+        forkJoin({
+        income: this.api.getIncome(),
+        expenses: this.api.getExpenses()
+        }).subscribe(({ income, expenses }) => {
+        this.totalSavings = income - expenses;
+        });
+    ```
+- combineLatest - waits for every observable to emit atleast a single value. After that, whenever an observable emits a new value, it emits the latest value from every stream.
+    ```
+        combineLatest([this.searchTerm$, this.category$, this.dateRange$])
+        .subscribe(([term, cat, range]) => {
+            this.filterTransactions(term, cat, range);
+        });
+    ```
+
+86. Retry and retrywith operators.
+- These are operators to handle errors and allows us to resubscribe automatically to the source Observable.
+- We can pass the number of retries as parameters to the method. (retry(3)).
+
+87. What is a state?
+- State refers to the data that the application manages and displays to the user. It is like a snapshot of the current application's data.
+- Why do we need state management - Sharing data between components become much easier. Using services/Subjects can become complex in large applications.
+- With state manageent, we can have all the data in one place and can read it from anywhere inside our application.
+
+88. What is NgRx?
+- It is a reactive state management Library for Angular that provides a structured, predictable and scalable way to manage state (data) of the application.
+- Store: Single source of truth for application state. Its a js object that can be accessed throughout the application.
+- Actions: These are plain objects that describe unique events that have happened (user clicks, api fetches). This signals an intent to change the state.
+- Reducer: The actions are handled by the reducer. It takes the current state and an action, and returns a new immutable state. 
+- Selectors: Pure functions that are used to get a specific slice of data from the store. It prevents re-rendering unless the exact data they depend on has changed.
+- Effects: These handles events that happen outside of angular like api calls, logging. They listen for a action, performs a task and dispatches the result.
+- The state within the store are never directly modified. Only new states are created.
+- The store exposes the state as observable, allowing components to subscribe to changes and react accordingly.
+- Action is created by: ``` export const increment = createAction('increment') ```
+    ``` export const addProduct = createAction('addProduct', props<Product[]>()) ```
+
+89. What is a Reducer?
+- In NgRx, a reducer is a pure function which determines how the application state should change in response to an action. It returns a new state with the store and action passed, the state is immutable.
+- CreateReducer method is used to create reducer, it takes two arguments, current state and action as inputs.
+    ```
+        export const initialState: ProductState = {
+            counter: 0
+        }
+
+        export const counterReducer = createReducer(
+            initialState,
+            on(increment, (state) => state + 1),
+            on(decrement, (state) => state - 1)
+        )
+    ```
+- on() is a helper function used inside Reducer to define how the state should change when specific action is performed.
+- Effects are for side effects such as async api calls, timers, logging. Used to perform additional actions on the state.
+
+90. What are signals?
+- Signals are wrapper around a value that can notify consumers when the value changes. It can store any values from primitive ones to data structures.
+- Without signals, angular uses change detection mechanism to find out if a value has changed and updates it.
+- But change detection happens very frequently and affects the performance of the app.
+- We can declare signals by: ``` let counterVal = signal(0) ```
+    ``` this.counterVal.set(this.counterVal() + 1); ```
+- Signal returns a function type, so use () in component and view to access the values of a signal.
