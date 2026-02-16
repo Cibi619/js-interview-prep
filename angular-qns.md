@@ -540,3 +540,50 @@
 - We can declare signals by: ``` let counterVal = signal(0) ```
     ``` this.counterVal.set(this.counterVal() + 1); ```
 - Signal returns a function type, so use () in component and view to access the values of a signal.
+
+91. What are RxJS operators?
+- They are functions that takes an Observable as input and returns a new Observable.
+- They are the building blocks of reactive programming, used to manipulate, transform, and combine streams of data in a functional way.
+
+92. What is pipe() operator?
+- It is a method that allows us to chain multiple RxJS operators together. Most crucial for composing complex data transformations.
+    ```
+    of (1,2,3,4,5).pipe(
+        filter(el => el % 2 == 0),
+        map(el => el * 10)
+    )
+    .subscribe(result => console.log(result))
+    ```
+
+93. What is map() operator?
+- The map() operator transforms each item emitted by an Observable into a new item based on the provided function. 
+- Mainly to transform all the data in the stream on any specific conditions.
+
+94. What is mergeMap()?
+- mergeMap() is a RxJS flattening operator that chains async operations.
+- When the source observable emits a value, mergeMap() creates a new inner observable for that value and subscribes to it automatically.
+- If the source emits multiple values, mergeMap() processes them all concurrently (parallel execution), and results arrive in the order they complete, not the original order.
+- For example, if we want to fetch all users and then get posts for each user: first we receive the users array, then we use from() to convert it into individual emissions, then mergeMap() fetches posts for each user in parallel. We receive results as each request completes.
+
+95. What is exhaustMap()?
+- It is another RxJS flattening operator. It maps each value from the source observable to the inner observable.
+- It ignores all new emissions from the source observable while the current projected inner observable is still active.
+
+96. take operator()
+- It allows to take only the first n values emitted by the observable and then completes the stream. Useful in retry logic.
+
+97. What is switchMap()?
+- Switchmap() is an RxJS operator that chains async operations, but it cancels the current inner observable when a new one arrives. It always keeps the latest operation running. 
+- It is perfect for scenarios like search or autocomplete where we only care the latest user input.
+
+98. What is an Effect?
+- An effect refers to the change made to the external variables, asynchronous HTTP calls or file manipulation. Any change made to external variables other than application state is an effect.
+- Some examples: To load data from backend API or save/update data on server, authentication/authorization - login, logout, refreshing tokens, interacting with browser apis.
+- They are used to manage and execute side effects. After the side effect is completed, they dispatch a new action (success/failure) to update the store with the result.
+- NgRX effects are angular injectable services. Similar to reducers, they listens for a dispatched action and performs a side effect.
+- It doesn't handle state directly, it just dispatches another action, which is handled by reducer, which updates the state.
+
+99. Reducer vs Effect
+- Reducers are pure functions, they are used to update state changes and they are consistent.
+- Effects handle side effects ensuring that the components remain pure and app logic is more organized and testable.
+- When the action is tere in both reducer and effect, both of them is triggered, reducer is triggered first.
