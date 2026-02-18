@@ -587,3 +587,98 @@
 - Reducers are pure functions, they are used to update state changes and they are consistent.
 - Effects handle side effects ensuring that the components remain pure and app logic is more organized and testable.
 - When the action is tere in both reducer and effect, both of them is triggered, reducer is triggered first.
+
+100. What are Interceptors?
+- Interceptors is a middleware provided by the HTTPClient module. They allow us to hook into the HTTP call process and perform actions before the request is sent and right after recieving response. 
+- Examples - applying auth headers, caching data, setting up global loading state. 
+- They are registered with the help of withInterceptors().
+
+101. What is lazy loading and how does it improve performance of the application?
+- Lazy loading is a design pattern in angular that delays the initialization or loading of the component or module until it is used by the user. 
+- Instead of loading the entire app at once, we break it into smaller chunks as the user navigates.
+    ```
+        export const routes: Routes = [
+        {
+            path: 'courses',
+            loadComponent: () => import('./courses/courses.component').then(m => m.CoursesComponent)
+        }
+        ]; 
+    ```
+
+102. What is OnPush change detection strategy?
+- It is a change detection strategy used in angular to improve the overall performance of application. It tells angular to skip checking a component and its children from running change detection unless any specific action has occured (like click events, events, input changes, signal updates).
+- If we change a property of object inside the existing one, angular sees the reference and skips it from change detection. So, we can create a new object with spread operator and change the property. Now, angular will run change detection on the changes.
+
+103. What is the async pipe and why is it better?
+- async pipe is a feature in angular that can be used in templates to automatically handle promises/Observables.
+- It subscribes to the data source, retrieves latest value and renders it in the view.
+- It automatically subscribes and unsubscribes, so it is better for performance as it avoids memory leaks.
+
+104. What is trackBy in ngFor?
+- trackBy is a function used with *ngFor directive to optimize rendering performance when dealing with lists of dynamic data. 
+- It provides unique identifier for each item (eg. trackBy id), allowing angular to efficiently track which items have been added, removed, removing unnecessary DOM manipulation.
+- By default, angular uses object identity to track items.
+- Syntax in modern @for:
+    ```
+        <ul>
+        @for (item of items; track item.id) {
+            <li>{{ item.name }}</li>
+        }
+        </ul> 
+    ```
+
+105. What is pure vs impure pipe?
+- Pipes are pure by default. A pure pipe has the transform() method which is only invoked if there is a change to its input value. Triggers when a primitive value or an object reference changes.
+- It is highly efficient. Angular uses memoization on this transform method and caches the result for next use. Eg. CurrencyPipe, DataPipe
+- It runs during every change detection cycle even if values has not changed. Eg. AsyncPipe, JSONPipe.
+
+106. What is tree shaking?
+- Tree shaking is a step in the build process that identifies and removes dead code (unused code) from final js bundle. 
+- The build tool (webpack, esbuild) looks at the import export statements to see which part of code is actually being called.
+
+107. What is AOT compilation?
+- In AOT, the compilation happens on machine (build server) during the build process. Since browser doesn't have to render code, it is much faster to load.
+- It catches the template errors in the build stage itself. And smaller bundle size.
+
+108. What is the Angular build optimizer?
+- It is a tool used during the production build process to further reduce size of js bundles by making them easier to tree-shake.
+
+109. What is code splitting?
+- Technique that breaks application's large js bundles into smaller chunks, that can be loaded on demand. 
+
+110. What is preloading strategy for lazy modules?
+- Preloading strategy is a technique that loads the other lazy-loaded modules in the background after the initial bundle has loaded. 
+- The app doesn't wait for user to interact for lazy loading. It is interactive immediately.
+- we can specify the property - withPreloading(PreloadAllModules). 
+- Only a specific component/module can also be preloaded.
+    ```
+    import { routes } from './app.routes';
+
+    export const appConfig: ApplicationConfig = {
+    providers: [
+        provideRouter(
+        routes,
+        // This tells Angular to download all lazy routes in the background
+        withPreloading(PreloadAllModules) 
+        )
+    ]
+    };
+    ```
+
+111. How do you use Chrome DevTools to debug Angular performance?
+- We can debug angular performance with the profiler tab in angular devtools extension to detect changes and time to run.
+- We can record/start profiler and interact with the app.
+
+112. What is Ivy renderer?
+- It is the rendering engine for angular.
+- Key architecture - Designed to make Angular tree-shaking, smaller bundle size for standalone components as default, stricter type checking for templates.
+
+113. What is SlicePipe and KeyValuePipe?
+- SlicePipe - produces new slice/subset of array. template version of slice() method.
+- ``` {{ collection | slice:start:end }} ```
+- KeyValuePipe - converts objects or map to array for being able to iterate it in template with @for/ngFor.
+    ```
+    @for (item of settings | keyvalue; track item.key) {
+        <p>{{ item.key }}: {{ item.value }}</p>
+    }
+    ```
