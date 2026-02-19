@@ -35,7 +35,9 @@
 8. What are directives in angular?
 - Directives are classes with additional behavior to the elements in the templates.
 - Three main directives - Components, structural directives and attribute directives.
-- Component directive - They are directives with template and view. They encapsulate UI logic. 
+- Component directive - They are directives with template and view. They encapsulate UI logic.
+- Structural directive - Used to modify the layout of DOM by adding, removing or manipulating elements. ngFor, ngIf, ngSwitch are examples.
+- Attribute directive - Used to modify the appearance & behaviour of existing element, component or other directive without changing the structure of the DOM. 
 
 9. What is a component? Three main parts?
 - It is a fundamental block of the application. 
@@ -57,7 +59,7 @@
   - ngOnChanges: It is a lifecycle hook that is executed at the start whenever a component is initialized and an input bound property changes. 
   - ngOnInit: It is a commonly used lifecycle hook that is called right after the ngOnChanges is done (after the input properties changes are updated). It is fired only once. By this time, none of the child components projected contents, views will be updated. Perfect place to add initialization logic as it will be called only once.
   - ngDoCheck: This lifecycle hook runs on every change detection cycle, even if no input properties are changed. It runs after ngOnChanges and ngOnInit. It is a good place to have logic that should be run on every change detection cycle or user interaction as it will always run.
-  - ngAfterContentInit: This lifecycle hook is called only after the projected content is fully initialized and rendered in View. Content projection is where when parent component has the child selector called and specifies additional lines(contents) within it, and the child component has a placeholder to recieve that (<ng-content>). Similar to ngOnInit, this is only called during the first change detection cycle after content is projected.
+  - ngAfterContentInit: This lifecycle hook is called only after the projected content is fully initialized and rendered in View. Content projection is where when parent component has the child selector called and specifies additional lines(contents) within it, and the child component has a placeholder to recieve that (<ng-content>). Similar to ngOnInit, this is only called during the first change detection cycle after content is projected. <ng-content> acts as a placeholder in the child component's template where the parent component actually provides the code (external projection).
   - ngAfterContentChecked: This lifecycle hook is called during every change detection cycle after the projection content has been initialized and checked. This runs multiple times (whenever change detection cycle runs).
   - ngAfterViewInit: This lifecycle hook is called after all the component's view and all the child's view has been fully initialized. Angular also updates properties with @ViewChild and @ViewChildren decorator before raising this hook. It is only called during the first change detection cycle.
   - ngAfterViewChecked: This hook is called after angular checks and updates all the components view and child's view. It is called during successive change detection cycles.
@@ -90,6 +92,8 @@
 - ngAfterContentInit is invoked after ngDoCheck when there is an external content projected in the component. It runs only once.
 - Earliest place to use @ContentChild/@ContentChildren.
 - ngAfterContentChecked is invoked whenever there is changes in projected content. Checked hooks fires very frequently and if not properly used, can cause performance issues.
+- @ContentChild - This decorator is used to access a reference of a DOM element or a component or a directive from the projected content inside child component class.
+- @ContentChildren - This decorator is used to access reference of multiple projected contents/elements of same type. It returns a QueryList, which is an Observable-like collection that automatically updates if the projected items change dynamically.
 
 19. What are the types of data binding in Angular?
 - Angular mainly supports two types of data binding - one-way and two-way data binding.
@@ -117,6 +121,7 @@
 
 24. Safe navigation operator (?.) - what problem does it solve?
 - Also known as optional chaining, it is commonly used to solve the problem of runtime errors, where if we access a variable with null or undefined values and try accessing it's properties, the error is thrown. This can be avoided with safe navigation operator.
+- It is difference from **Nullish Coalescing Operator (??)**. It is a logical operator that returns the value in the right-side of the operator if left-side assignment is null or undefined, or it returns the value in left.
 
 25. What is the difference between [innerHTML] and interpolation?
 - Interpolation - Most common way to display data as plain text. Useful for displaying simple dynamic values.
@@ -253,7 +258,7 @@
 - Shared module is for services, pipes, directives that are to be shared across multiple components. For example, custom button, loader spinners, etc.
 
 52. Lazy loading modules - how does it work?
-- Lazy loading is a design pattern in angular that allws to load modules/components only user navigates to a specific route.
+- Lazy loading is a design pattern in angular that allows to load modules/components only user navigates to a specific route.
 - Useful for performance optimization.
 
 53. What is forRoot() and forChild() pattern?
@@ -350,6 +355,7 @@
 - To access data, there are two ways:
     - snapshot - synchronous way, can be used if user will not change the url params value or navigate to another page.
     - observable - async way.
+- snapshot vs observable(params) - In activatedRoute methods, when both these are used to fetch the url data. But snapshot captures the state when the component is initialized. But when we are navigating to a different url within the same component (for example, rendering data in same component for different user, snapshot doesn't get the updated values as it is within component). Here, we use the params method which returns an Observable from which we can subscribe and recieve the latest changes.
 
 67. What is a child route?
 - A child route in angular is a route that is nested inside another route. It is useful to create hierarchy in the UI where the parent component stays and child routes are swapped in and out. Mainly useful for modular grouping and code reusability.
@@ -396,7 +402,7 @@
 - CanLoad - This route guard prevents the lazy loaded modules from loading.
 
 70. What is CanActivate?
-- CanActivate route guard can be used in routes to protect o restrict it from users with unauthorized access.
+- CanActivate route guard can be used in routes to protect or restrict it from users with unauthorized access.
      ``` { path: 'Courses', Component: CoursesComponent, canActivate: [AuthGuardService]} ```
 
 71. What is CanDeactivate?
@@ -442,7 +448,7 @@
 - Observable (Event Emitter) -> Observer(Event Listener/Subscriber) -> Event Handler
 
 79. What is of() and from()?
-- The of() operator creates an observable from the arguments we pass onto it. Any number of parameters can be passed.
+- The of() operator creates an observable from the arguments we pass onto it. Any number of parameters can be passed. Returns it as a single value or iterable.
 - It is a RxJS operator. Each argument is sent separately from one another.
 - from() operator takes in a single value as parameter (which is an iterable) and that is iterated and their values are streamed one after the other.
 - They both return an Observable, but the way they handle data is different.
@@ -470,6 +476,7 @@
 
 84. What is mergeMap vs switchMap vs concatMap vs exhaustMap?
 - These are flattening operators. They are primarily used when an outer observable we have triggers an inner observable and how these are handled.
+- I would use mergeMap when I need to perform multiple independent HTTP calls in parallel and I don’t want to cancel previous requests. For     example, loading product details for multiple items in a shopping cart.
 - mergeMap - allows multiple inner observables to run simultaneously. Can be used to delete multiple items back to back.
 - switchMap - when the inner observable changes, it allows for switching to the new one and forgetting the current one.
 - concatMap - it queues the new one and waits for current one to complete.
@@ -502,7 +509,7 @@
 87. What is a state?
 - State refers to the data that the application manages and displays to the user. It is like a snapshot of the current application's data.
 - Why do we need state management - Sharing data between components become much easier. Using services/Subjects can become complex in large applications.
-- With state manageent, we can have all the data in one place and can read it from anywhere inside our application.
+- With state management, we can have all the data in one place and can read it from anywhere inside our application.
 
 88. What is NgRx?
 - It is a reactive state management Library for Angular that provides a structured, predictable and scalable way to manage state (data) of the application.
@@ -510,7 +517,7 @@
 - Actions: These are plain objects that describe unique events that have happened (user clicks, api fetches). This signals an intent to change the state.
 - Reducer: The actions are handled by the reducer. It takes the current state and an action, and returns a new immutable state. 
 - Selectors: Pure functions that are used to get a specific slice of data from the store. It prevents re-rendering unless the exact data they depend on has changed.
-- Effects: These handles events that happen outside of angular like api calls, logging. They listen for a action, performs a task and dispatches the result.
+- Effects: These handles events that happen outside of angular like api calls, logging. They listen for a action, performs a task and dispatches the result as a new action.
 - The state within the store are never directly modified. Only new states are created.
 - The store exposes the state as observable, allowing components to subscribe to changes and react accordingly.
 - Action is created by: ``` export const increment = createAction('increment') ```
