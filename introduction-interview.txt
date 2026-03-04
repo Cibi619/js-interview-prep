@@ -1,0 +1,42 @@
+Hi, I'm Cibi Sharan Cholarani, a frontend developer with over 2 years of experience developing responsive and scalable applications primarily with 
+Angular. I have worked extensively with modern angular versions and am comfortable working across the stack, from creating responsive designs to 
+managing application state. 
+
+I bring a strong foundation working with modern angular versions and over 2 years of hands-on experience in the domain. I have experience working
+with Modern angular applications versions 16+, even using the latest approaches such as Signals, standalone apps, etc.
+
+Recently, I worked as a freelance developer for United Cartage, a transportation service. My main objective was to modernize and streamline their 
+online booking engine. I architected the entire user flow using Angular Reactive Forms, handling complex data entry from initial order booking to 
+a secure Payment Gateway integration.
+This project taught me a lot about handling sensitive financial data and optimizing the 'Checkout' conversion path in a production environment.
+
+Prior to that, I was part of a team that built an internal Learning Management System (LMS) from scratch. I was responsible for several 
+mission-critical modules, including the Attendance Tracker, Resignation System, and Reimbursement Workflow. I worked a lot with forms as well, and
+primarily used BehaviorSubject for managing states in the application.
+Because this was a modular system, I focused heavily on Component Reusability and Dependency Injection. For example, in the Reimbursement module, 
+I used Interceptors to handle authentication tokens and file uploads securely. I also implemented custom Directives to handle specific UI behaviors
+across the different trackers, ensuring the codebase remained maintainable.
+
+Now, I did my courses both in full-stack development and DevOps to expand my skillset.
+
+Why you used angular?
+- Angular has strong typing as they work with Typescript and since they are component-based, it is very useful and ideal to build scalable apps. 
+
+How did you handle payment integration logic?
+- I worked on integrating Clover's payment system. First, I analyzed the business need - they wanted customers to pay for delivery services 
+through a secure, hosted checkout rather than handling card data directly on their site. This meant we needed to use Clover's hosted checkout 
+solution.
+- I implemented a REST API endpoint that would - Accept order details from the frontend, Create a checkout session with Clover's API, 
+Return a secure checkout URL to redirect the customer.
+
+RESTful API's + OAUTH/JWT
+In this role I was responsible for integrating the frontend with backend services via RESTful APIs — handling things like structured API calls, 
+managing response states, and ensuring smooth data flow between the UI and server. On the security side, I implemented OAuth for third-party 
+authentication and JWT for session management — so tokens were issued on login, validated on protected routes, and refreshed appropriately. 
+This tightened up who could access what, which we measured and saw roughly a 45 percent drop in unauthorized access incidents.
+
+OAuth (Open Authorization) is a standard protocol for authorization. It defines a series of steps (flows) that allow an application to get limited 
+access to a user's data on another service (like Google or Facebook) without ever seeing the user's password.
+
+JWT (JSON Web Token) is a compact, URL-safe data format for securely transmitting information between parties as a JSON object. It is digitally 
+signed, so you can trust the data inside hasn't been tampered with.

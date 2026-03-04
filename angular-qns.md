@@ -58,7 +58,7 @@
 - Execution order and list of lifecycle hooks:
   - ngOnChanges: It is a lifecycle hook that is executed at the start whenever a component is initialized and an input bound property changes. 
   - ngOnInit: It is a commonly used lifecycle hook that is called right after the ngOnChanges is done (after the input properties changes are updated). It is fired only once. By this time, none of the child components projected contents, views will be updated. Perfect place to add initialization logic as it will be called only once.
-  - ngDoCheck: This lifecycle hook runs on every change detection cycle, even if no input properties are changed. It runs after ngOnChanges and ngOnInit. It is a good place to have logic that should be run on every change detection cycle or user interaction as it will always run.
+  - ngDoCheck: This lifecycle hook runs on every change detection cycle, even if no input properties are changed. It runs after ngOnChanges and ngOnInit. It is a good place to have logic that should be run on every change detection cycle or user interaction and to write custom change detection logic as it will always run. But it runs too frequently.
   - ngAfterContentInit: This lifecycle hook is called only after the projected content is fully initialized and rendered in View. Content projection is where when parent component has the child selector called and specifies additional lines(contents) within it, and the child component has a placeholder to recieve that (<ng-content>). Similar to ngOnInit, this is only called during the first change detection cycle after content is projected. <ng-content> acts as a placeholder in the child component's template where the parent component actually provides the code (external projection).
   - ngAfterContentChecked: This lifecycle hook is called during every change detection cycle after the projection content has been initialized and checked. This runs multiple times (whenever change detection cycle runs).
   - ngAfterViewInit: This lifecycle hook is called after all the component's view and all the child's view has been fully initialized. Angular also updates properties with @ViewChild and @ViewChildren decorator before raising this hook. It is only called during the first change detection cycle.
@@ -452,6 +452,7 @@
 - It is a RxJS operator. Each argument is sent separately from one another.
 - from() operator takes in a single value as parameter (which is an iterable) and that is iterated and their values are streamed one after the other.
 - They both return an Observable, but the way they handle data is different.
+- To convert a promise into an Observable, from() operator is used.
 
 80. what are map() and tap() operators in RxJS?
 - Both are pipeable operators that are used to handle data that flows through an observable stream.
@@ -464,12 +465,12 @@
 - map(), filter(), of(), from(), tap() are some examples of operators.
 
 82. What is a Subject?
-- Subject is a special type of Observable allowing multiple users to use the data. It is similar to EventEmitters where the emitted event can be seen by all the subscribers.
+- Subject is a special type of Observable allowing multiple users to use the data. It is similar to EventEmitters where the emitted event can be seen by all the subscribers. It acts as both Observer and Observable.
 - It is a part of reactive programming where a new value when emitted (with next()) will immediately be updated to the subscribers.
 
 83. Difference between Subject, BehaviorSubject, ReplaySubject, AsyncSubject?
 - These are the variants of subject used to control how data is shared and remembered.
-- Subject - does not remember previously emitted values. Only the latest value can be read.
+- Subject - does not remember previously emitted values. Only values emitted after subscribed can be read.
 - BehaviorSubject - it always requires an initial value. when a value is emitted(latest value), all the subscribers get noticed of that value.
 - ReplaySubject - Has more history. Can store some previous values that can be seen.
 - AsyncSubject - Only emits the last value it has recieved after the complete() method.
@@ -477,7 +478,16 @@
 84. What is mergeMap vs switchMap vs concatMap vs exhaustMap?
 - These are flattening operators. They are primarily used when an outer observable we have triggers an inner observable and how these are handled.
 - I would use mergeMap when I need to perform multiple independent HTTP calls in parallel and I don’t want to cancel previous requests. For     example, loading product details for multiple items in a shopping cart.
-- mergeMap - allows multiple inner observables to run simultaneously. Can be used to delete multiple items back to back.
+- mergeMap - allows multiple inner observables to run simultaneously. Can be used to delete multiple items back to back. Multiple file upload is one common example. You don't want to cancel others while they are in progress when you upload a new file. Sending notifications to multiple users is also an example.
+    ```
+        from(selectedUsers).pipe(
+        mergeMap(user =>
+            this.http.post(`/api/notifications`, { userId: user.id, message })
+        )
+        ).subscribe(response => {
+        console.log('Notification sent:', response);
+        });
+    ```
 - switchMap - when the inner observable changes, it allows for switching to the new one and forgetting the current one.
 - concatMap - it queues the new one and waits for current one to complete.
 - exhaustMap - when a current observable is there, it ignores new ones.
@@ -510,6 +520,7 @@
 - State refers to the data that the application manages and displays to the user. It is like a snapshot of the current application's data.
 - Why do we need state management - Sharing data between components become much easier. Using services/Subjects can become complex in large applications.
 - With state management, we can have all the data in one place and can read it from anywhere inside our application.
+- State management is about having a single, predictable place to store and manage the application's data. It becomes much easier to work with it, update, modify, get current state, etc.
 
 88. What is NgRx?
 - It is a reactive state management Library for Angular that provides a structured, predictable and scalable way to manage state (data) of the application.
@@ -689,3 +700,190 @@
         <p>{{ item.key }}: {{ item.value }}</p>
     }
     ```
+
+114. What are signal forms?
+- These are introduced as new update in Angular 21. In ReactiveForms, instead of the traditional approach of using FormGroup, FormControls, we use Signal Forms. 
+- One benefit is Signals allow angular to track exactly which part of the application has changed, rather than checking the entire component tree.
+- It synchronizes state automatically.
+- It has automatic two-way data binding. They use [formfield] directive for this.
+    ```
+    import {Component, signal} from '@angular/core';
+    import {form, FormField} from '@angular/forms/signals';
+    @Component({
+    selector: 'app-login',
+    imports: [FormField],
+    template: `
+        <input type="email" [formField]="loginForm.email" />
+        <input type="password" [formField]="loginForm.password" />
+    `,
+    })
+    export class LoginComponent {
+    loginModel = signal({
+        email: '',
+        password: '',
+    });
+    loginForm = form(this.loginModel);
+    }
+    ```
+- To read model data:
+    ```
+    async onSubmit() {
+    const formData = this.loginModel();
+    console.log(formData.email, formData.password);
+    // Send to server
+    await this.authService.login(formData);
+    }
+    ```
+
+115. What are Async Validators?
+- Async Validators are used when we are performing any asynchronous operation to check whether the given input is right or wrong. For example, if a user signs up and enters an username, if it already exists, we need to show an error. We can use async validators in this scenario.
+
+116. What is Unit Testing?
+- Unit testing is a software testing method by which individual units of code are tested to determine their use. 
+- Jest - modern testing framework for angular, much faster than Jasmine.
+    ``` npm i jest jest-preset-angular @types/jest -D ```
+
+117. Thought process when writing test cases
+- Common qns to ask/check for every component:
+    - What does this component have?  - test initial state
+    - What does this component do?  - test methods/functions
+    - What does this component Show? - test DOM/template
+    - What can change in this component? - test state changes
+
+<!-- OTHER ANGULAR QNS MISSED OR TO BE COVERED  -->
+118. What compilation we use now? JIT or AOT?
+- Before that, Ivy is the rendering engine and underlying compiler infra that angular uses to turn our components to DOM elements.
+- Now coming to the compilation, right now angular uses AOT compilation. Here, instead of compiling code in the browser, angular does it during the build stage, which makes it efficient as browser doesn't need to download angular compiler. 
+- It also catches template errors beforehand. As the templates are pre-compiled, injection attacks can be prevented.
+
+119. Why use projection instead of an @Input() string?
+- @Input is used to pass data (string,numbers, object) whereas content projection is much more flexible to pass complex HTML, components, inserting DOM layout inside child component. With content projection, we can pass HTML tags, nested components, directives which cannot be done with @Input decorator.
+
+120. What is View Encapsulation?
+- It is a mechanism used by Angular to keep the component styles isolated. It creates an unique badge or id, with which the given styles are embedded. So this styles will only be applied inside that view/template. This happens in emulated mode. 
+- Without View Encapsulation, any style applied to the component is applied globally.
+
+121. What is @ViewChild decorator?
+- It allows us to use a DOM element, component or directive from the view template inside the component class. It is used to get a reference of DOM element in the component. It gets the first matching element.
+
+122. What are angular services?
+- An angular service is a class with a well-defined purpose. A component should use services for tasks that don't involve view or application logic.
+- Some of the use cases are for tasks that fetch data from server, validate user input.
+- These classes are injectable with an @Injector decorator. Meaning, they are to be used with DI system.
+
+123. What is hierarchical injection in angular?
+- Angular's DI system is hierarchical. When a component/directive requests a dependency, angular starts looking for a provider in that component's own injector. If not found, it travels up the injector tree, checking parent injectors until it finds a provider or reaches the top which is the NullInjector, where it throws error. 
+
+124. Resolution modifiers in angular injectors?
+- Angular dependency injection resolution mechanism of the service starts from component and stops either when a service is found or Null Injector is reached. This is the default resolution and it can be changed using Resolution Modifier.
+- @Optional - allows angular to consider service to be injected as optional, if not found, instead of throwing NullInjector error, it simply returns null.
+- @Self - Tells the injector to only look at the component's injector, it won't walk up the hierarchical tree to check it.
+- @SkipSelf - It skips the component's injector and searches from it's parent to the top.
+
+125. What is the inject() function, and how does it differ from Constructor Injection?
+- inject() method is used in modern angular versions where we can inject a dependency without a constructor. 
+    ``` private myService = inject(MyService); ```
+- Much concise and cleaner syntax, it is also beneficial where if a base class is inherited, a child class should use super() to access the base class methods. With inject(), we don't require this.
+
+126. What are forms and types of forms used in angular?
+- Forms are used for tasks relating to data submission and handling user data such as login, signups, other form submissions.
+- Angular provides supports for form-related tasks with the FormsModule provided in @angular/forms.
+- There are three types of forms: Template-driven, reactive and signal forms(most recent one).
+
+127. Diff between template-driven and reactive forms?
+- Where form is created: In template-driven, we describe the form in the template with directives like ngModel. We use two-way data binding for fetching form values and validations. In reactive forms, we explicitly create the form model in Typescript class. 
+- Reactive forms are synchronous, template-driven are asynchronous.
+
+128. Reactive forms are synchronous while template-driven are asynchronous, how?
+- Reactive forms are synchronous because the form model is created directly in TypeScript and available immediately. Template driven forms are asynchronous because Angular has to render the template and process directives like ngModel before the form model exists.
+
+129. What is FormArray in angular?
+- A formArray is a class used to handle variable number of FormControl, FormGroup or even other FormArray instances.
+- With this, we can dynamically add, remove, or reorder elements. Here, each control is accessed by its index.
+
+130. Where can we use signals? List some use-cases.
+- Signals are wrapper around a value. It is a system which granularly tracks how and where your state is used throughout the application. 
+- Some of the use cases are:
+    - For simple component state changes. Signals are more efficient when values change frequently and needs to be rendered in UI. 
+    - Computed signals are great when we have a value that depends on another piece of data. It is memoized and doesn't re-render the whole DOM.
+    - effect() can be used for side effects.
+
+131. Difference between set() & update().
+- set() is used to directly replace signal's value with a new one.
+- update() is used to change the value based on current value.
+
+132. Do you know about the RxJs Interop? / Can Signals be used along RxJs?
+- Yes. Angular provides the ``` @angular/core/rxjs-interop ``` package for this.
+- toSignal() creates a signal from an Observable. It behaves similar to async pipes in template, but is more flexible and can be used anywhere in the application.
+- toObservable() creates an observable from a signal.
+
+133. Difference btw Signals and Observables.
+- Both of these are used for reactivity and getting instant updates on the values but the difference is Observables are primarily designed to handle asynchronous streams of data and complex event handling, while signals are designed for synchronous state management and better reactivity.
+- To track UI state changes, signals are better option as they are glitch-free, don't require manual subscription, bypasses change detection. Also computed signals are memoized and lazily evaluated.
+- Glitch-free here refers to: In RxJS, if two different paths depend on the same source, they might update at slightly different times, causing a slight delay in UI changes. Signal avoids this problem by using Push-Pull algorithm. In 'Push' phase, it eagerly pushes a notification downstream through the dependency graph to all its consumers. 'Pull' occurs only if the users explicitly use getters().
+
+134. What are cold and hot Observables?
+- When data is produced by the Observables itself, it is cold observable. If it is produced from outside the Observable, it is hot observable.
+- cold observable starts emiting values only if someone subscribes to them. Eg. HTTP requests. Useful for one-time, independent tasks.
+- hot observable starts emiting values even if no one is listening. The data here is shared among all subscribers. Eg. Subjects/BehaviorSubject, user events like mouse-click, resizing, etc.
+
+135. How to handle errors in Observables?
+- We can handle errors using catchError and retry methods. catchError() intercepts an error and allows us to return a fallback observable or rethrow.
+    ```
+    import { catchError, of } from 'rxjs';
+
+    this.http.get('/api/data').pipe(
+    catchError(error => {
+        console.error('Error:', error);
+        return of([]);  // return fallback value
+    })
+    ).subscribe(data => console.log(data));
+    ```
+- retry(count) can be used to automatically resubscribe to the source observable on error. 
+    ```
+    import { retry, catchError, of } from 'rxjs';
+
+    this.http.get('/api/data').pipe(
+    retry({
+        count: 3,
+        delay: 2000        // wait 2 seconds between each retry
+    }),
+    catchError(err => of([]))
+    ).subscribe();
+    ```
+    
+136. Describe the DI lookup strategy and can dependency be made optional?
+- When a component requests a dependency, angular follows these steps:
+    - It checks the component itself (local)
+    - Checks the parent component and bubbles up the tree
+    - Checks the root (providedIn: root)
+    - Platform/NullInjector - Throws the nullInjector error if not found.
+- By default, Angular throws this NullInjector error when the requested dependency is not found. We can use the @Optional() decorator, where angular we simply pass null instead of throwing error.
+
+137. What do you mean by decorators?
+- Decorators in angular are functions used to configure classes or properties. They kind of explain the metadata of the block of code - what it does. There are class decorators (@Component, @NgModule, @Injectable), property decorators(@Input, @Output), method decorators(@Hostlistener).
+
+138. What are share() and shareReplay() rxjs?
+- These are methods used to cache the values fetched from the observables and to change a cold observable to a hot one (multicast). 
+- share() will store the value but doesn't remember previous values. shareReplay() will remember previous values as well.
+
+139. What are rxjs schedulers?
+- Schedulers can be used to control when a subscription starts and when notifications are delivered. They lets us define in what execution context will an Observable deliver notifications to its observer.
+    ```
+    const observable = new Observable((observer) => {
+    observer.next(1);
+    observer.next(2);
+    observer.next(3);
+    observer.complete();
+    }).pipe(
+    observeOn(asyncScheduler)
+    );
+    ```
+
+## Order to Remember
+- Component, directives, lifecycle hooks - qns 1 - 11
+- Data bindings (20-25's)
+- Routing - 60
+- Observables - 75s
+- RxJS operators - 80-90s
+- NgRX - 88

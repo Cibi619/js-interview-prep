@@ -57,8 +57,12 @@
             const b = 20;
             console.log(a+b);
         }
+        return inner();
     }
     ```
+- It is when the function remembers its variables from the outer scope even after the outer function has finished executing and popped off from the stack. 
+- This happens because when inner function was created, it was given or attached the surrounding scope to it. So even after the outer function finished executing or popped from stack, inner function still has reference to the outer scope's variables.
+- But if the inner() function is not returned, then the closure will still form, but the result is not returned and both inner() and outer() is done executing and the value is not stored next time the method is called.
 
 7. What are temporal dead zones (TDZ)?
 - **Variables declared with let,const,class are in TDZ when they are accessed before initialization**. 
@@ -126,7 +130,7 @@
         </div>
     ```
 - event capturing - same, but the **order is reversed (from top to bottom)**. It is mentioned using useCapture: true as argument. 
-- event delegation - This is th technique that can **handle events effectively by just having one event listener instead of multiple ones**.
+- event delegation - This is th technique that can **handle events effectively by just having one event listener instead of multiple ones. It depends on event bubbling**.
 - event.stopPropogation() - stops bubbling/capturing of events on parent element.
 
 16. What is DOM?
@@ -389,7 +393,7 @@
 - If not used, the object containing null is accessed, reference error is thrown.
 
 41. What is the event loop?
-- The event loop is js mechanism to handle asynchronous operations in js, as the language itself is single threaded.
+- The event loop is js mechanism to handle asynchronous operations in js, as the language itself is single threaded / The event loop allows JavaScript to handle asynchronous tasks on a single thread, ensuring smooth execution without blocking.
 - Asynchronous operations are pushed to the task queues and when they are completed, wait for the call stack to be empty.
 - After call stack is empty and everything is performed, the items in priority queue (microtask queue) is executed first, which has promises.
 - After this, other things such as setTimeout, setInterval, I/O are executed.
@@ -434,3 +438,40 @@
 - It is a program that executes javascript code. 
 - It reads the source code, converts it to machine code, and manages memory through garbage collection. 
 - V8 engine - chrome, edge, etc.
+
+45. How does javascript work behind the scene when it sees a html file with the script tag, what happens behind?
+- When the browser loads the HTML file, it starts parsing the document from top to bottom.
+- The moment it sees script tag, it pauses, fetches the script and then resumes. 
+- Once script is fetched, javascript has its engine (like V8). It also tokenizes the soure code. Global execution context is created. Javascript hoisting happens where all the variable declarations are hoisted to the top. It has a call stack, where the engine goes through each line and pushes it into the call stack. when func finishes, it is popped off from the stack.
+- Execution context is the big container or box inside which whole js runs. It's two components are: memory and execution thread.
+- Memory will have all the variables values in key:value pairs. It also has the function calls.
+- The thread of execution runs code line by line (synchronous, single-threaded). 
+
+46. Localstorage vs Sessionstorage vs Cookies
+- LocalStorage is used to persist data in client side browser even if the tab/window is closed and reopened.
+- SessionStorage is used to contain data for the particular session, if tab closes, it is gone.
+- Cookies are small piece of data that can be passed to the server through http requests. 
+
+47. What are the ES6 features we have?
+- let,const variable declarations.
+- arrow functions.
+- rest, spread operators.
+- destructuring - unpacking values from array
+- template literals - backticks in string interpolation.
+- async await keywords.
+- promises.
+
+48. How 'this' keyword works for normal and arrow functions?
+- With normal functions, when we access those with 'this' keyword, it refers to the object from which the this is called. It then uses that scope.
+- With arrow functions, they are lexical scoped, meaning they access variables from where they were written, not from where they were called. So they don't have their own this keyword.
+    ```
+        //  THIS IS THE GLOBAL SCOPE
+                              
+        const user = {               // object starts
+        name: "John",
+        greet: () => {             // arrow function looks OUTSIDE the object
+            console.log(this.name);  // finds global scope — no name there!
+        }
+        }                            // object ends
+    ```
+- In the above example, name is undefined as the arrow functions sees outside the scope, (object is not a scope) and there is only global scope where this value is undefined. If it was a function instead of object, the inner arrow functions gets the this scope from outer function if it had the declaration.
