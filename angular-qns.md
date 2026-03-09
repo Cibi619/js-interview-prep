@@ -275,6 +275,7 @@
     - The Dependency: The service that needs to be used.
     - The Provider: It tells angular how to create the dependency.(providedIn: root)
     - The Injector: It is responsible for maintaining container of service instances and delivering them to components as they request them.
+- Angular DI is hierarchical, if dependency is provided in root, it is shared and accessed by all the components. If it is provided component level, that component and its children can access that dependency.
 
 56. What is an injector and injection token?
 - Injector is responsible for maintaining instances and delivering them when needed, injection token is used when the dependency is not a class.
@@ -453,6 +454,7 @@
 - from() operator takes in a single value as parameter (which is an iterable) and that is iterated and their values are streamed one after the other.
 - They both return an Observable, but the way they handle data is different.
 - To convert a promise into an Observable, from() operator is used.
+- of() operator is used in testing as they often mimic api responses (arrays/objects type) and can be subscribed.
 
 80. what are map() and tap() operators in RxJS?
 - Both are pipeable operators that are used to handle data that flows through an observable stream.
@@ -879,6 +881,18 @@
     observeOn(asyncScheduler)
     );
     ```
+
+140. SSR vs CSR vs SSG
+- Server-Side Rendering(SSR) is where the content is rendered on the server side and pre-rendered html is sent to the browser. Server does the heavy work here and is useful for SEO performance as the html content is readily available when web crawlers look.
+- Client-side Rendering(CSR) is where the client's browser does the heavy lifting and converts raw data to interface. Instead of server sending the finished webpage, it sends a blank page with set of instructions(JS) for the browser to build the page itself.
+- Static-site Generation(SSG) is where the website is rendered into HTML files at build time. It is very fast.
+
+141. Property Binding vs Attribute Binding
+- Property binding is primarily used to pass data to DOM elements or child components. Attribute binding is specifically used when corresponding DOM property is not available for that attribute (like colspan, rowspan, aria attributes).
+
+142. Hostlistener, Hostbinding
+- HostListener - we can listen to events on the host element and react to that event by executing some event handler functions.
+- Eg. to listen mouseenter, mouseover events in custom directives.
 
 ## Order to Remember
 - Component, directives, lifecycle hooks - qns 1 - 11
